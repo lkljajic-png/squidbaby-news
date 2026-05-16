@@ -69,7 +69,10 @@ async function renderUserList() {
   list.innerHTML = users.map(u => `
     <li class="user-item">
       <div class="user-info">
-        <span class="user-name">${escHtml(u.username)}</span>
+        <div class="user-details">
+          ${u.name ? `<span class="user-fullname">${escHtml(u.name)}</span>` : ''}
+          <span class="user-name">@${escHtml(u.username)}</span>
+        </div>
         <span class="badge badge-${u.role}">${u.role}</span>
       </div>
       ${u.role !== 'admin' ? `<button class="btn-delete" data-username="${escHtml(u.username)}" aria-label="Obriši">✕</button>` : ''}
@@ -118,19 +121,23 @@ function initAuth() {
     e.preventDefault();
     const btn = e.target.querySelector('.btn-add');
     const errEl = document.getElementById('addUserError');
-    const username = document.getElementById('newUsername').value.trim();
-    const password = document.getElementById('newPassword').value;
+    const firstName = document.getElementById('newFirstName').value.trim();
+    const lastName  = document.getElementById('newLastName').value.trim();
+    const username  = document.getElementById('newUsername').value.trim();
+    const password  = document.getElementById('newPassword').value;
     errEl.classList.add('hidden');
     btn.disabled = true;
     try {
       const res = await fetch('/api/users', {
         method: 'POST', headers: authHeaders(),
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ firstName, lastName, username, password })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      document.getElementById('newUsername').value = '';
-      document.getElementById('newPassword').value = '';
+      document.getElementById('newFirstName').value = '';
+      document.getElementById('newLastName').value  = '';
+      document.getElementById('newUsername').value  = '';
+      document.getElementById('newPassword').value  = '';
       await renderUserList();
     } catch (err) {
       errEl.textContent = err.message;

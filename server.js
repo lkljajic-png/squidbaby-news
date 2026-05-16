@@ -109,11 +109,13 @@ http.createServer(async (req, res) => {
     }
 
     if (req.method === 'POST') {
-      const { username, password } = await readBody(req);
-      if (!username?.trim() || !password?.trim()) return json(res, 400, { error: 'Ime i lozinka su obavezni' });
+      const { username, password, firstName, lastName } = await readBody(req);
+      if (!username?.trim() || !password?.trim()) return json(res, 400, { error: 'Korisničko ime i lozinka su obavezni' });
+      if (!firstName?.trim() || !lastName?.trim()) return json(res, 400, { error: 'Ime i prezime su obavezni' });
       const users = loadUsers();
       if (users.find(u => u.username === username)) return json(res, 409, { error: 'Korisnik već postoji' });
-      users.push({ username: username.trim(), password, role: 'user' });
+      const name = `${firstName.trim()} ${lastName.trim()}`;
+      users.push({ username: username.trim(), password, role: 'user', name });
       saveUsers(users);
       return json(res, 201, { ok: true });
     }

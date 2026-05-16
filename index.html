@@ -47,6 +47,14 @@
       <ul id="userList" class="user-list"></ul>
       <form id="addUserForm" class="add-user-form">
         <h3>Dodaj korisnika</h3>
+        <div class="input-row">
+          <div class="input-wrap">
+            <input type="text" id="newFirstName" placeholder="Ime" required>
+          </div>
+          <div class="input-wrap">
+            <input type="text" id="newLastName" placeholder="Prezime" required>
+          </div>
+        </div>
         <div class="input-wrap">
           <input type="text" id="newUsername" placeholder="Korisničko ime" spellcheck="false" required>
         </div>
@@ -54,7 +62,7 @@
           <input type="password" id="newPassword" placeholder="Lozinka" required>
         </div>
         <p id="addUserError" class="login-error hidden"></p>
-        <button type="submit" class="btn-add">Dodaj</button>
+        <button type="submit" class="btn-add">Dodaj korisnika</button>
       </form>
     </div>
   </div>

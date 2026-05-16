@@ -290,7 +290,9 @@ header {
 
 .user-info { display: flex; align-items: center; gap: 10px; }
 
-.user-name { font-weight: 600; font-size: 0.9rem; }
+.user-details { display: flex; flex-direction: column; gap: 1px; }
+.user-fullname { font-weight: 600; font-size: 0.9rem; }
+.user-name { font-size: 0.75rem; color: var(--text-muted); }
 
 .badge {
   font-size: 0.65rem;
@@ -327,6 +329,12 @@ header {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
 .add-user-form h3 {
