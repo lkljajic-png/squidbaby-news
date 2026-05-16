@@ -243,13 +243,6 @@ main { max-width: 960px; margin: 0 auto; }
   background: var(--surface2);
 }
 
-.card-item .item-thumb-placeholder {
-  width: 88px;
-  height: 68px;
-  border-radius: var(--radius-sm);
-  background: var(--surface2);
-  flex-shrink: 0;
-}
 
 /* ─── SHARED META ───────────────────────────────── */
 .card-meta {

@@ -136,14 +136,12 @@ function renderArticles(articles, containerId) {
     return;
   }
 
-  // Spremi sve u store da ih showDetail može naći
   articles.forEach(a => articleStore.set(a.url, a));
 
   const [hero, ...rest] = articles;
-  const key = u => `showDetail(${JSON.stringify(u)})`;
 
   const heroHtml = `
-    <article class="card-hero" onclick="${key(hero.url)}">
+    <article class="card-hero" data-url="${escHtml(hero.url)}">
       ${hero.image ? `<img class="hero-img" src="${escHtml(hero.image)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
       <div class="hero-body">
         <div class="card-meta">
@@ -157,7 +155,7 @@ function renderArticles(articles, containerId) {
     </article>`;
 
   const listHtml = rest.map(a => `
-    <article class="card-item" onclick="${key(a.url)}">
+    <article class="card-item" data-url="${escHtml(a.url)}">
       <div class="item-body">
         <div class="card-meta">
           <span class="source">${escHtml(a.source)}</span>
@@ -166,9 +164,7 @@ function renderArticles(articles, containerId) {
         </div>
         <h2 class="card-title">${escHtml(a.title)}</h2>
       </div>
-      ${a.image
-        ? `<img class="item-thumb" src="${escHtml(a.image)}" alt="" loading="lazy" onerror="this.className='item-thumb-placeholder'">`
-        : `<div class="item-thumb-placeholder"></div>`}
+      ${a.image ? `<img class="item-thumb" src="${escHtml(a.image)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
     </article>`).join('');
 
   el.innerHTML = heroHtml + listHtml;
@@ -289,6 +285,11 @@ async function registerSW() {
 
 // --- INIT ---
 document.getElementById('refreshBtn').addEventListener('click', () => loadData(true));
+
+document.querySelector('main').addEventListener('click', e => {
+  const card = e.target.closest('[data-url]');
+  if (card) showDetail(card.dataset.url);
+});
 
 window.addEventListener('online',  () => { document.getElementById('offline-banner').classList.add('hidden'); loadData(true); });
 window.addEventListener('offline', () => { document.getElementById('offline-banner').classList.remove('hidden'); });
