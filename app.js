@@ -48,6 +48,7 @@ function hideLoginScreen() {
   const name = AUTH.name || AUTH.username || '';
   document.getElementById('headerName').textContent = name;
   document.getElementById('headerName').classList.remove('hidden');
+  document.getElementById('logoutBtn').classList.remove('hidden');
 
   if (AUTH.isAdmin) document.getElementById('adminBtn').classList.remove('hidden');
 }

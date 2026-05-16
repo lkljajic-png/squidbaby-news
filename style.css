@@ -63,6 +63,28 @@ header {
   justify-content: space-between;
 }
 
+.header-row2-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 0;
+  transition: color 0.15s;
+}
+
+.btn-logout:hover { color: #e57373; }
+
 .logo {
   display: flex;
   align-items: center;

@@ -96,18 +96,21 @@
               <path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
             </svg>
           </button>
-          <button id="logoutBtn" class="btn-icon-round" aria-label="Odjavi se">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        </div>
+      </div>
+      <!-- Red 2: ime + osvježeno + odjava -->
+      <div class="header-row2">
+        <span id="headerName" class="header-name hidden"></span>
+        <div class="header-row2-right">
+          <span id="lastUpdated" class="status-text"></span>
+          <button id="logoutBtn" class="btn-logout hidden">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
               <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
             </svg>
+            Odjavi se
           </button>
         </div>
-      </div>
-      <!-- Red 2: ime + osvježeno -->
-      <div class="header-row2">
-        <span id="headerName" class="header-name hidden"></span>
-        <span id="lastUpdated" class="status-text"></span>
       </div>
     </div>
   </header>
