@@ -1,4 +1,4 @@
-const CACHE_NAME = 'squidbaby-v1';
+const CACHE_NAME = 'squidbaby-v2';
 const APP_SHELL = ['./', './index.html', './style.css', './app.js', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {
