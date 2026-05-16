@@ -10,7 +10,8 @@
   --squid:       #c41e3a;
   --baby:        #d946ef;
   --header-h:    56px;
-  --nav-h:       64px;
+  --tabs-h:      48px;
+  --top-offset:  calc(var(--header-h) + var(--tabs-h));
   --radius:      14px;
   --radius-sm:   8px;
 }
@@ -22,8 +23,8 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100dvh;
-  padding-top: var(--header-h);
-  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding-top: var(--top-offset);
+  padding-bottom: env(safe-area-inset-bottom);
   overflow-x: hidden;
 }
 
@@ -62,6 +63,37 @@ header {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 4px;
+}
+
+.header-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--squid), var(--baby));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.header-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
 }
 
 .status-text {
@@ -328,44 +360,59 @@ header {
 }
 .hidden { display: none !important; }
 
-/* ─── BOTTOM NAV ───────────────────────────────── */
+/* ─── TAB BAR (fiksno ispod headera) ──────────── */
 .tabs {
   position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: calc(var(--nav-h) + env(safe-area-inset-bottom));
-  padding-bottom: env(safe-area-inset-bottom);
-  background: rgba(14,14,14,0.97);
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  height: var(--tabs-h);
+  background: rgba(12,12,12,0.97);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
   display: flex;
-  z-index: 200;
+  z-index: 190;
 }
 
 .tab {
   flex: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 8px;
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   cursor: pointer;
   transition: color 0.2s;
-  padding: 8px 0;
+  padding: 0 12px;
+  position: relative;
   -webkit-tap-highlight-color: transparent;
 }
 
-.tab-icon { display: flex; align-items: center; justify-content: center; }
+.tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: currentColor;
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+
+.tab.active::after { transform: scaleX(1); }
+
+.tab-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .tab-label { text-transform: uppercase; }
 
-.tab[data-tab="squid"].active    { color: var(--squid); }
-.tab[data-tab="babymonster"].active { color: var(--baby); }
+.tab[data-tab="squid"].active       { color: var(--squid); }
+.tab[data-tab="babymonster"].active  { color: var(--baby);  }
 
 /* ─── MAIN ─────────────────────────────────────── */
 main { max-width: 960px; margin: 0 auto; }
@@ -684,51 +731,11 @@ main { max-width: 960px; margin: 0 auto; }
 
 /* ─── DESKTOP ───────────────────────────────────── */
 @media (min-width: 768px) {
-  body {
-    padding-bottom: 0;
-  }
+  .header-name { max-width: 180px; }
 
-  /* Top tab bar on desktop */
-  .tabs {
-    position: sticky;
-    top: var(--header-h);
-    bottom: auto;
-    height: 50px;
-    padding-bottom: 0;
-    border-top: none;
-    border-bottom: 1px solid var(--border);
-    background: rgba(14,14,14,0.97);
-  }
-
-  .tab {
-    flex-direction: row;
-    font-size: 0.85rem;
-    gap: 7px;
-    position: relative;
-  }
-
-  .tab::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 3px;
-    border-radius: 3px 3px 0 0;
-    background: currentColor;
-    transform: scaleX(0);
-    transition: transform 0.25s ease;
-  }
-
-  .tab.active::after { transform: scaleX(1); }
-  .tab[data-tab="squid"]       { color: var(--text-muted); }
-  .tab[data-tab="babymonster"] { color: var(--text-muted); }
-  .tab[data-tab="squid"].active    { color: var(--squid); }
-  .tab[data-tab="babymonster"].active { color: var(--baby); }
-
-  /* 2-column hero + list layout on desktop */
   .articles {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
     gap: 0;
     padding: 20px;
     align-items: start;

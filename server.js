@@ -90,7 +90,7 @@ http.createServer(async (req, res) => {
     const user = users.find(u => u.username === username && u.password === password);
     if (!user) return json(res, 401, { error: 'Pogrešno korisničko ime ili lozinka' });
     const token = createSession(user);
-    return json(res, 200, { token, role: user.role, username: user.username });
+    return json(res, 200, { token, role: user.role, username: user.username, name: user.name || user.username });
   }
 
   if (url.pathname === '/api/logout' && req.method === 'POST') {

@@ -3,14 +3,16 @@ const AUTH = {
   get token()    { return localStorage.getItem('sb_token'); },
   get role()     { return localStorage.getItem('sb_role'); },
   get username() { return localStorage.getItem('sb_user'); },
+  get name()     { return localStorage.getItem('sb_name'); },
   get isAdmin()  { return this.role === 'admin'; },
-  save(token, role, username) {
+  save(token, role, username, name) {
     localStorage.setItem('sb_token', token);
     localStorage.setItem('sb_role', role);
     localStorage.setItem('sb_user', username);
+    localStorage.setItem('sb_name', name || username);
   },
   clear() {
-    ['sb_token','sb_role','sb_user'].forEach(k => localStorage.removeItem(k));
+    ['sb_token','sb_role','sb_user','sb_name'].forEach(k => localStorage.removeItem(k));
   }
 };
 
@@ -41,6 +43,14 @@ function showLoginScreen() {
 
 function hideLoginScreen() {
   document.getElementById('login-screen').classList.add('hidden');
+
+  // Prikaži ime u headeru
+  const name = AUTH.name || AUTH.username || '';
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+  document.getElementById('headerAvatar').textContent = initials;
+  document.getElementById('headerName').textContent   = name;
+  document.getElementById('headerUser').classList.remove('hidden');
+
   if (AUTH.isAdmin) document.getElementById('adminBtn').classList.remove('hidden');
 }
 
@@ -90,7 +100,7 @@ function initAuth() {
     btn.textContent = '...';
     try {
       const data = await doLogin(username, password);
-      AUTH.save(data.token, data.role, data.username);
+      AUTH.save(data.token, data.role, data.username, data.name);
       hideLoginScreen();
       await loadData();
     } catch (err) {
