@@ -46,10 +46,8 @@ function hideLoginScreen() {
 
   // Prikaži ime u headeru
   const name = AUTH.name || AUTH.username || '';
-  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-  document.getElementById('headerAvatar').textContent = initials;
-  document.getElementById('headerName').textContent   = name;
-  document.getElementById('headerUser').classList.remove('hidden');
+  document.getElementById('headerName').textContent = name;
+  document.getElementById('headerName').classList.remove('hidden');
 
   if (AUTH.isAdmin) document.getElementById('adminBtn').classList.remove('hidden');
 }
@@ -324,6 +322,7 @@ function setStatus(text, spinning = false) {
   const btn = document.getElementById('refreshBtn');
   btn.disabled = spinning;
   btn.classList.toggle('spinning', spinning);
+  btn.disabled = spinning;
 }
 
 function formatTs(ts) {
