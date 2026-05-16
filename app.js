@@ -1,3 +1,138 @@
+// --- AUTH ---
+const AUTH = {
+  get token()    { return localStorage.getItem('sb_token'); },
+  get role()     { return localStorage.getItem('sb_role'); },
+  get username() { return localStorage.getItem('sb_user'); },
+  get isAdmin()  { return this.role === 'admin'; },
+  save(token, role, username) {
+    localStorage.setItem('sb_token', token);
+    localStorage.setItem('sb_role', role);
+    localStorage.setItem('sb_user', username);
+  },
+  clear() {
+    ['sb_token','sb_role','sb_user'].forEach(k => localStorage.removeItem(k));
+  }
+};
+
+function authHeaders() {
+  return { 'Authorization': `Bearer ${AUTH.token}`, 'Content-Type': 'application/json' };
+}
+
+async function doLogin(username, password) {
+  const res = await fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Greška pri prijavi');
+  return data;
+}
+
+async function doLogout() {
+  await fetch('/api/logout', { method: 'POST', headers: authHeaders() }).catch(() => {});
+  AUTH.clear();
+  showLoginScreen();
+}
+
+function showLoginScreen() {
+  document.getElementById('login-screen').classList.remove('hidden');
+}
+
+function hideLoginScreen() {
+  document.getElementById('login-screen').classList.add('hidden');
+  if (AUTH.isAdmin) document.getElementById('adminBtn').classList.remove('hidden');
+}
+
+// --- ADMIN PANEL ---
+async function openAdminPanel() {
+  document.getElementById('admin-panel').classList.remove('hidden');
+  await renderUserList();
+}
+
+function closeAdminPanel() {
+  document.getElementById('admin-panel').classList.add('hidden');
+}
+
+async function renderUserList() {
+  const res = await fetch('/api/users', { headers: authHeaders() });
+  const users = await res.json();
+  const list = document.getElementById('userList');
+  list.innerHTML = users.map(u => `
+    <li class="user-item">
+      <div class="user-info">
+        <span class="user-name">${escHtml(u.username)}</span>
+        <span class="badge badge-${u.role}">${u.role}</span>
+      </div>
+      ${u.role !== 'admin' ? `<button class="btn-delete" data-username="${escHtml(u.username)}" aria-label="Obriši">✕</button>` : ''}
+    </li>`).join('');
+
+  list.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const name = btn.dataset.username;
+      if (!confirm(`Obrisati korisnika "${name}"?`)) return;
+      await fetch(`/api/users/${encodeURIComponent(name)}`, { method: 'DELETE', headers: authHeaders() });
+      await renderUserList();
+    });
+  });
+}
+
+// --- INIT AUTH EVENTS ---
+function initAuth() {
+  document.getElementById('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    const errEl = document.getElementById('loginError');
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    errEl.classList.add('hidden');
+    btn.disabled = true;
+    btn.textContent = '...';
+    try {
+      const data = await doLogin(username, password);
+      AUTH.save(data.token, data.role, data.username);
+      hideLoginScreen();
+      await loadData();
+    } catch (err) {
+      errEl.textContent = err.message;
+      errEl.classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Prijavi se';
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => doLogout());
+  document.getElementById('adminBtn').addEventListener('click', () => openAdminPanel());
+  document.getElementById('closeAdmin').addEventListener('click', () => closeAdminPanel());
+
+  document.getElementById('addUserForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('.btn-add');
+    const errEl = document.getElementById('addUserError');
+    const username = document.getElementById('newUsername').value.trim();
+    const password = document.getElementById('newPassword').value;
+    errEl.classList.add('hidden');
+    btn.disabled = true;
+    try {
+      const res = await fetch('/api/users', {
+        method: 'POST', headers: authHeaders(),
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      document.getElementById('newUsername').value = '';
+      document.getElementById('newPassword').value = '';
+      await renderUserList();
+    } catch (err) {
+      errEl.textContent = err.message;
+      errEl.classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
 const CONFIG = {
   refreshInterval: 12 * 60 * 60 * 1000,
   count: 30,
@@ -29,7 +164,10 @@ function cacheValid() {
 
 // --- API ---
 async function fetchFeed(query) {
-  const res = await fetch(`/feed?q=${encodeURIComponent(query)}`, { signal: AbortSignal.timeout(10000) });
+  const res = await fetch(`/feed?q=${encodeURIComponent(query)}`, {
+    signal: AbortSignal.timeout(10000),
+    headers: { 'Authorization': `Bearer ${AUTH.token}` }
+  });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const text = await res.text();
   const xml = new DOMParser().parseFromString(text, 'text/xml');
@@ -295,8 +433,14 @@ window.addEventListener('online',  () => { document.getElementById('offline-bann
 window.addEventListener('offline', () => { document.getElementById('offline-banner').classList.remove('hidden'); });
 
 window.addEventListener('load', async () => {
+  initAuth();
   await registerSW();
   initTabs();
-  await loadData();
-  setInterval(() => loadData(true), CONFIG.refreshInterval);
+
+  if (AUTH.token) {
+    hideLoginScreen();
+    await loadData();
+    setInterval(() => loadData(true), CONFIG.refreshInterval);
+  }
+  // else: login screen ostaje vidljiv, loadData se poziva nakon uspješnog login-a
 });
