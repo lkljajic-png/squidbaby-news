@@ -1,0 +1,12 @@
+{
+  "name": "squidbaby-news",
+  "version": "1.0.0",
+  "description": "PWA news aggregator for Squid Game and BABYMONSTER",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "SquidBaby News",
+  "short_name": "SquidBaby",
+  "description": "Najnovije vijesti o Squid Game i BABYMONSTER",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#c41e3a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["news", "entertainment"]
+}
