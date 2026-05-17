@@ -10,7 +10,7 @@
   --squid:       #c41e3a;
   --baby:        #d946ef;
   --header-h:    88px;
-  --tabs-h:      48px;
+  --tabs-h:      64px;
   --top-offset:  calc(var(--header-h) + var(--tabs-h));
   --radius:      14px;
   --radius-sm:   8px;
@@ -448,7 +448,38 @@ header {
 .tab.active::after { transform: scaleX(1); }
 
 .tab-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.tab-label { text-transform: uppercase; }
+
+.tab-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.tab-label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.tab-sub {
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.55;
+  line-height: 1;
+}
+
+.tab-divider {
+  width: 1px;
+  height: 36px;
+  background: var(--border);
+  align-self: center;
+  flex-shrink: 0;
+}
 
 .tab[data-tab="squid"].active       { color: var(--squid); }
 .tab[data-tab="babymonster"].active  { color: var(--baby);  }

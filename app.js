@@ -239,7 +239,7 @@ function showDetail(url) {
   else { img.src = ''; img.style.display = 'none'; }
 
   document.getElementById('detailTitle').textContent        = a.title;
-  document.getElementById('detailDesc').textContent         = a.description || 'Klikni "Pročitaj cijeli članak" za detalje.';
+  document.getElementById('detailDesc').textContent         = a.description || 'Klikni "Pročitaj ceo članak" za detalje.';
   document.getElementById('detailSource').textContent       = a.source;
   document.getElementById('detailSourceHeader').textContent = a.source;
   document.getElementById('detailTime').textContent         = timeAgo(a.publishedAt);
@@ -286,7 +286,7 @@ function renderArticles(articles, containerId) {
   const el = document.getElementById(containerId);
 
   if (!articles?.length) {
-    el.innerHTML = '<p class="empty">Nema dostupnih vijesti.</p>';
+    el.innerHTML = '<p class="empty">Nema dostupnih vesti.</p>';
     return;
   }
 
@@ -334,7 +334,7 @@ function setStatus(text, spinning = false) {
 }
 
 function formatTs(ts) {
-  return new Date(Number(ts)).toLocaleString('bs-BA', {
+  return new Date(Number(ts)).toLocaleString('sr-RS', {
     day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
   });
 }
@@ -347,7 +347,7 @@ async function loadData(force = false) {
     if (squid && baby) {
       renderArticles(squid, 'squidArticles');
       renderArticles(baby,  'babymonsterArticles');
-      setStatus(`Osvježeno: ${formatTs(localStorage.getItem(KEYS.ts))}`);
+      setStatus(`Osveženo: ${formatTs(localStorage.getItem(KEYS.ts))}`);
       return;
     }
   }
@@ -376,7 +376,7 @@ async function loadData(force = false) {
 
     renderArticles(squid, 'squidArticles');
     renderArticles(baby,  'babymonsterArticles');
-    setStatus(`Osvježeno: ${formatTs(Date.now())}`);
+    setStatus(`Osveženo: ${formatTs(Date.now())}`);
   } catch (err) {
     console.error('Fetch failed:', err);
     const squid = readCache(KEYS.squid);
